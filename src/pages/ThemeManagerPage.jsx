@@ -30,10 +30,15 @@ class ThemeManagerPage extends Component {
 
   createTheme = async () => {
     const { themeName } = this.state;
+    if (!themeName.trim()) {
+      this.setNotification("Theme name cannot be empty.");
+      return;
+    }
     try {
       const data = await ThemeService.createTheme(themeName);
       this.setNotification(data);
       this.setState({ themeName: "" });
+      this.fetchThemes(); // Refresh themes list after creation
     } catch (error) {
       this.setNotification("An error occurred while creating the theme.");
     }
@@ -42,7 +47,7 @@ class ThemeManagerPage extends Component {
   addWordToTheme = async () => {
     const { word, selectedThemeId } = this.state;
     if (!word.trim() || !selectedThemeId) {
-      alert("Both word and theme must be selected.");
+      this.setNotification("Both word and theme must be selected.");
       return;
     }
 
@@ -50,7 +55,7 @@ class ThemeManagerPage extends Component {
       const data = await ThemeService.addWordToTheme(selectedThemeId, word);
       this.setNotification(`Word "${word}" added to theme!`);
       this.setState({ word: "" });
-      this.fetchWords();
+      this.fetchWords(); // Refresh words list after adding a word
     } catch (error) {
       this.setNotification("An error occurred while adding the word.");
     }
@@ -59,7 +64,7 @@ class ThemeManagerPage extends Component {
   fetchWords = async () => {
     const { selectedThemeId } = this.state;
     if (!selectedThemeId) {
-      alert("Please select a theme.");
+      this.setNotification("Please select a theme.");
       return;
     }
 
@@ -80,6 +85,7 @@ class ThemeManagerPage extends Component {
 
   setNotification = (message) => {
     this.setState({ notification: message });
+    setTimeout(() => this.setState({ notification: "" }), 5000); // Clears notification after 5 seconds
   };
 
   render() {
