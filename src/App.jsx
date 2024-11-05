@@ -1,12 +1,15 @@
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
-import './App.css'
-import { useState } from 'react';
-import StartingPage from "./pages/StartingPage";
-import ChooseDifficulty from "./pages/ChooseDifficulty";
-import ChooseTheme from "./pages/ChooseTheme";
-import Game from "./pages/Game";
-import AdminPage from "./pages/AdminPage";
-import ThemeManagerPage from "./pages/ThemeManagerPage";
+import './App.css';
+import {
+  StartingPage,
+  ChooseDifficulty,
+  ChooseTheme,
+  Game,
+  AdminPage,
+  ThemeManagerPage,
+  LoginPage,
+  RegisterPage
+} from "./pages";
 
 function App() {
   return (
@@ -18,11 +21,13 @@ function App() {
           <Route path="/choose-theme" element={<ChooseTheme />} />
           <Route path="/game" element={<Game />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="/ThemeManagement" element={<ThemeManagerPage/>} />
+          <Route path="/ThemeManagement" element={<ThemeManagerPage />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/Register" element={<RegisterPage />} />
         </Routes>
       </Router>
-  </div>
+    </div>
   );
 }
 
-export default App
+export default App;
