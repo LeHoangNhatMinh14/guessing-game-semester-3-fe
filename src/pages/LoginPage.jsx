@@ -9,6 +9,11 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const storeUserData = (token, user) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!name.trim() || !password.trim()) {
@@ -17,13 +22,16 @@ const LoginPage = () => {
     }
 
     setLoading(true);
-    setError(null); // Clear any previous errors
+    setError(null);
 
     try {
-      const response = await axios.post('/login', { name, password });
+      const response = await axios.post('/players/login', { name, password });
       if (response.status === 200 && response.data) {
-        const data = response.data;
-        localStorage.setItem('user', JSON.stringify(data));
+        const { token, user } = response.data;
+        storeUserData(token, user);
+
+        setName('');
+        setPassword('');
         setLoading(false);
         navigate('/');
       } else {
@@ -32,7 +40,19 @@ const LoginPage = () => {
       }
     } catch (e) {
       setLoading(false);
-      setError('An error occurred. Please try again later.');
+      if (e.response) {
+        if (e.response.status === 403) {
+          setError('Access forbidden. Please check your credentials.');
+        } else if (e.response.data && e.response.data.message) {
+          setError(e.response.data.message);
+        } else {
+          setError('An error occurred. Please try again.');
+        }
+      } else if (e.request) {
+        setError('No response from server. Please try again later.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
 
