@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from "../axiosConfig";
+import axios from '../axiosConfig';
 
 const LoginPage = () => {
   const [name, setName] = useState('');
@@ -9,9 +9,9 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const storeUserData = (token, user) => {
+  // Store only the token in local storage
+  const storeUserData = (token) => {
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const handleLogin = async (e) => {
@@ -27,12 +27,14 @@ const LoginPage = () => {
     try {
       const response = await axios.post('/players/login', { name, password });
       if (response.status === 200 && response.data) {
-        const { token, user } = response.data;
-        storeUserData(token, user);
+        const { token } = response.data; // Get the token from the response
+        storeUserData(token); // Store token in local storage
 
+        // Clear input fields and loading state
         setName('');
         setPassword('');
         setLoading(false);
+        // Navigate to the homepage after successful login
         navigate('/');
       } else {
         setLoading(false);
@@ -57,7 +59,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
+    <div className="auth-page">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
@@ -77,6 +79,17 @@ const LoginPage = () => {
         </button>
       </form>
       {error && <p className="error-message">{error}</p>}
+      <p>
+        Don’t have an account?{' '}
+        <button
+          type="button"
+          onClick={() => {
+            navigate('/register');
+          }}
+        >
+          Register here
+        </button>
+      </p>
     </div>
   );
 };

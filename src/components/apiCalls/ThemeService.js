@@ -1,4 +1,4 @@
-import axios from "../axiosConfig";
+import axios from "../../axiosConfig";
 
 export default class ThemeService {
   static async fetchThemes() {
@@ -37,6 +37,28 @@ export default class ThemeService {
       return response.data.words;
     } catch (error) {
       console.error("Error fetching words:", error);
+      throw error;
+    }
+  }
+
+  static async deleteTheme(themeId) {
+    try {
+      const response = await axios.delete(`/themes/${themeId}`);
+      return response.status; // Returns the status (204 for successful deletion)
+    } catch (error) {
+      console.error("Error deleting theme:", error);
+      throw error;
+    }
+  }
+
+  static async deleteWordFromTheme(themeId, word) {
+    try {
+      const response = await axios.put(`/themes/${themeId}/words`, word, {
+        headers: { "Content-Type": "text/plain" },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting word from theme:", error);
       throw error;
     }
   }

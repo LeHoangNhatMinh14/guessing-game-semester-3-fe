@@ -8,7 +8,8 @@ import {
   AdminPage,
   ThemeManagerPage,
   LoginPage,
-  RegisterPage
+  RegisterPage,
+  ProfilePage,
 } from "./pages";
 import { GameProvider } from "./components/GameContext";
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/ThemeManagement" element={<ThemeManagerPage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/Register" element={<RegisterPage />} />
+            <Route path="/Profile" element={<ProfilePage/>} />
           </Routes>
         </GameProvider>
       </Router>

@@ -6,3 +6,4 @@ export { default as AdminPage } from './AdminPage';
 export { default as ThemeManagerPage } from './ThemeManagerPage';
 export { default as LoginPage } from './LoginPage';
 export { default as RegisterPage } from './RegisterPage';
+export {default as ProfilePage } from './ProfilePage'

@@ -7,6 +7,11 @@ function StartingPage() {
   return (
     <div className="starting-page">
       <LoginRegister />
+        <NavLink to="/Profile">
+          <button className="profile-button">
+            Profile
+          </button>
+        </NavLink>
       <h1>PicGuessr</h1>
       <NavLink to="/choose-difficulty"><button>Play</button></NavLink>
       <NavLink to="/admin"><button>Admin</button></NavLink>

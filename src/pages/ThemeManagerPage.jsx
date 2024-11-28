@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ThemeService from "../components/ThemeService";
+import ThemeService from "../components/apiCalls/ThemeService";
 import ThemeCard from "../components/ThemeCard";
 import "../css/ThemeManagerPage.css";
 

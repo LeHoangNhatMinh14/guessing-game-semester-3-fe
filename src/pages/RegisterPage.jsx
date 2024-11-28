@@ -5,21 +5,41 @@ import axios from '../axiosConfig';
 const RegisterPage = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (!name.trim() || !password.trim()) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
       const response = await axios.post('/players', {
         name,
         password,
-              });
+      });
       if (response.status === 201) {
-        const data = response.data;
-        localStorage.setItem('user', JSON.stringify(data));
+        setLoading(false);
+        setError('Registration successful. You can now log in.');
+        setName('');
+        setPassword('');
         navigate('/');
+      } else {
+        setLoading(false);
+        setError('Registration failed. Please try again.');
       }
     } catch (e) {
-      console.error('An error occurred during registration', e);
+      setLoading(false);
+      if (e.response && e.response.data && e.response.data.message) {
+        setError(e.response.data.message);
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
 
@@ -38,7 +58,10 @@ const RegisterPage = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleRegister}>Register</button>
+      <button onClick={handleRegister} disabled={loading}>
+        {loading ? 'Registering...' : 'Register'}
+      </button>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ThemeService from "./ThemeService";
+import ThemeService from "./apiCalls/ThemeService";
 
 const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   const [word, setWord] = useState("");
@@ -43,6 +43,19 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
     }
   };
 
+  // Function to delete the theme
+  const deleteTheme = async () => {
+    if (window.confirm(`Are you sure you want to delete the theme "${theme.name}"?`)) {
+      try {
+        await ThemeService.deleteTheme(theme.id);
+        setNotification(`Theme "${theme.name}" deleted successfully.`);
+        fetchThemes(); // Refresh the list of themes after deletion
+      } catch (error) {
+        setNotification("An error occurred while deleting the theme.");
+      }
+    }
+  };
+
   // useEffect to fetch words when the page is loaded if there are no words
   useEffect(() => {
     if (words.length === 0) {
@@ -53,6 +66,11 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   return (
     <div className="theme-card">
       <h3>{theme.name}</h3>
+
+      {/* Delete Theme Button */}
+      <button onClick={deleteTheme} className="delete-theme-button">
+        Delete Theme
+      </button>
 
       {/* Automatically fetch words when this button is pressed */}
       <button onClick={fetchWords}>View Words</button>
