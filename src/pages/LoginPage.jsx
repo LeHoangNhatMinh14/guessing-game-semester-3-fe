@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../axiosConfig';
+import PlayerService from '../components/apiCalls/PlayerService';
+import { AuthContext } from '../components/AuthContext'; // Import AuthContext
 
 const LoginPage = () => {
   const [name, setName] = useState('');
@@ -9,10 +10,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Store only the token in local storage
-  const storeUserData = (token) => {
-    localStorage.setItem('token', token);
-  };
+  const playerApi = new PlayerService();
+  const { login } = useContext(AuthContext); // Get the login function from AuthContext
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,36 +24,27 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await axios.post('/players/login', { name, password });
-      if (response.status === 200 && response.data) {
-        const { token } = response.data; // Get the token from the response
-        storeUserData(token); // Store token in local storage
+      const response = await playerApi.login({ name, password });
+      if (response) {
+        const { token } = response; // Extract token from the response
+        login(token); // Call login function from AuthContext to set the user and save the token
 
-        // Clear input fields and loading state
+        // Set token expiration to 1 hour
+        setTimeout(() => {
+          localStorage.removeItem('token');
+          console.log('Token has been cleared');
+        }, 3600000); // 3600000 milliseconds = 1 hour
+
         setName('');
         setPassword('');
         setLoading(false);
-        // Navigate to the homepage after successful login
-        navigate('/');
-      } else {
-        setLoading(false);
-        setError('Invalid credentials. Please try again.');
+        navigate('/'); // Redirect to homepage
       }
     } catch (e) {
       setLoading(false);
-      if (e.response) {
-        if (e.response.status === 403) {
-          setError('Access forbidden. Please check your credentials.');
-        } else if (e.response.data && e.response.data.message) {
-          setError(e.response.data.message);
-        } else {
-          setError('An error occurred. Please try again.');
-        }
-      } else if (e.request) {
-        setError('No response from server. Please try again later.');
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
+      setError(
+        e.response?.data?.message || 'An error occurred. Please try again.'
+      );
     }
   };
 
@@ -81,12 +71,7 @@ const LoginPage = () => {
       {error && <p className="error-message">{error}</p>}
       <p>
         Don’t have an account?{' '}
-        <button
-          type="button"
-          onClick={() => {
-            navigate('/register');
-          }}
-        >
+        <button type="button" onClick={() => navigate('/register')}>
           Register here
         </button>
       </p>

@@ -6,17 +6,17 @@ const LoginRegister = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Check if the user is logged in
-    const user = localStorage.getItem('user');
-    if (user) {
-      setIsLoggedIn(true);
-    }
+    // Check if the token exists in localStorage
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token); // Update login status based on token presence
   }, []);
 
   const handleLogout = () => {
-    // Remove user from localStorage and update state
-    localStorage.removeItem('user');
+    // Remove the token from localStorage and update state
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
+    // Optionally, redirect to the home or login page
+    window.location.href = '/';
   };
 
   return (

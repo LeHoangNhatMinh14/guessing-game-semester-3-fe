@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../axiosConfig';
+import PlayerService from '../components/apiCalls/PlayerService';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -9,26 +9,25 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const playerApi = new PlayerService();
+
   const handleRegister = async () => {
     if (!name.trim() || !password.trim()) {
       setError('Please fill in all fields.');
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
-      const response = await axios.post('/players', {
-        name,
-        password,
-      });
-      if (response.status === 201) {
+      const response = await playerApi.registerPlayer({ name, password });
+      if (response) {
         setLoading(false);
         setError('Registration successful. You can now log in.');
         setName('');
         setPassword('');
-        navigate('/');
+        navigate('/login'); // Redirect to login page after successful registration
       } else {
         setLoading(false);
         setError('Registration failed. Please try again.');
@@ -41,7 +40,7 @@ const RegisterPage = () => {
         setError('An unexpected error occurred. Please try again.');
       }
     }
-  };
+  };  
 
   return (
     <div className="register-page">

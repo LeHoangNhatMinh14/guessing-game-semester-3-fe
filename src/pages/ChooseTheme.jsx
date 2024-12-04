@@ -1,32 +1,53 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ThemeService from "../components/apiCalls/ThemeService";
+import ThemeDisplay from "../components/ThemeDisplay";
 import { GameContext } from "../components/GameContext";
 
 function ChooseTheme() {
   const navigate = useNavigate();
-  const { setTheme, theme, lives } = useContext(GameContext);
+  const { setTheme } = useContext(GameContext);
+  const [themes, setThemes] = useState([]);
 
   useEffect(() => {
     console.log("ChooseTheme mounted");
-    console.log("Lives from context in ChooseTheme: ", lives);
+
+    // Fetch themes from the backend using ThemeService
+    const fetchThemes = async () => {
+      try {
+        const fetchedThemes = await ThemeService.fetchThemes();
+        setThemes(fetchedThemes);
+        console.log("Fetched themes: ", fetchedThemes);
+      } catch (error) {
+        console.error("Error fetching themes: ", error);
+      }
+    };
+
+    fetchThemes();
   }, []);
 
-  const handleTheme = (theme) => {
-    setTheme(theme);
-    console.log("Theme set in ChooseTheme: ", theme);
+  const handleThemeSelect = (selectedTheme) => {
+    setTheme(selectedTheme); // Store the entire theme object
+    console.log("Theme set in ChooseTheme: ", selectedTheme.id);
     navigate("/game");
   };
-
-  useEffect(() => {
-    console.log("Theme from context in ChooseTheme after setting: ", theme);
-  }, [theme]);
 
   return (
     <div>
       <h1>Choose Theme</h1>
-      <button onClick={() => handleTheme("Animals")}>Animals</button>
-      <button onClick={() => handleTheme("Cities")}>Cities</button>
-      <button onClick={() => handleTheme("Nature")}>Nature</button>
+      <div className="theme-cards-container">
+        {themes.length > 0 ? (
+          themes.map((theme) => (
+            <ThemeDisplay
+              key={theme.id}
+              theme={theme}
+              onSelectTheme={handleThemeSelect}
+            />
+          ))
+        ) : (
+          <p>Loading themes...</p>
+        )}
+      </div>
     </div>
   );
 }

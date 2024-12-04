@@ -1,7 +1,7 @@
 // Axios class to interact with the Game API
 import axios from '../../axiosConfig';
 
-class GameApi {
+export default class GameApi {
   constructor() {
     this.apiClient = axios.create({
       baseURL: axios.defaults.baseURL + '/games',
@@ -9,15 +9,28 @@ class GameApi {
         'Content-Type': 'application/json',
       },
     });
-  }
 
+    // Apply global interceptors to this instance
+    this.apiClient.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
+  
   // Start a new game
   async startGame(startGameRequest) {
     try {
-      const response = await this.apiClient.post('/start', startGameRequest);
+      console.log('startGameRequest:', startGameRequest); // Log request object
+      const response = await this.apiClient.post('/startNew', startGameRequest);
       return response.data;
     } catch (error) {
-      console.error('Error starting game:', error);
+      console.error('Error starting game:', error.response?.data || error.message);
       throw error;
     }
   }
@@ -55,5 +68,3 @@ class GameApi {
     }
   }
 }
-
-export default new GameApi();

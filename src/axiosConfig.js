@@ -10,12 +10,12 @@ axios.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    console.log('Request Headers:', config.headers); // Log headers
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
+
 
 // Optional: Create a response interceptor to handle 401 errors (e.g., when the token is expired)
 axios.interceptors.response.use(

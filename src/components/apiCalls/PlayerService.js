@@ -1,7 +1,7 @@
 // Axios class to interact with the Player API
 import axios from '../../axiosConfig';
 
-class PlayerApi {
+export default class PlayerApi {
   constructor() {
     // You no longer need to create a new instance here since axiosConfig already has everything configured
     this.apiClient = axios;
@@ -10,7 +10,7 @@ class PlayerApi {
   // Register a new player
   async registerPlayer(createPlayerRequest) {
     try {
-      const response = await this.apiClient.post('/players', createPlayerRequest);
+      const response = await this.apiClient.post('/players/register', {createPlayerRequest});
       return response.data;
     } catch (error) {
       console.error('Error registering player:', error);
@@ -60,5 +60,3 @@ class PlayerApi {
     }
   }
 }
-
-export default new PlayerApi();
