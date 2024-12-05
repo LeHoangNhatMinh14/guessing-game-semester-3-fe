@@ -10,7 +10,7 @@ export default class PlayerApi {
   // Register a new player
   async registerPlayer(createPlayerRequest) {
     try {
-      const response = await this.apiClient.post('/players/register', {createPlayerRequest});
+      const response = await this.apiClient.post('/players/register', createPlayerRequest);
       return response.data;
     } catch (error) {
       console.error('Error registering player:', error);
