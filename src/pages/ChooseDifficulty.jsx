@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GameContext } from "../components/GameContext";
+import { GameContext } from "../components/game/GameContext";
 
 function ChooseDifficulty() {
   const navigate = useNavigate();

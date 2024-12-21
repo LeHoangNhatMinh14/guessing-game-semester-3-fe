@@ -1,12 +1,15 @@
-import React from 'react';
+import React from "react";
+import "../css/ThemeDisplay.css";
 
-const ThemeDisplay = ({ theme, onSelectTheme }) => {
+function ThemeDisplay({ theme, onSelectTheme }) {
   return (
     <div className="theme-card">
-      <h3>{theme.name}</h3>
-      <button onClick={() => onSelectTheme(theme)}>Select Theme</button>
+      <h2 className="theme-name">{theme.name}</h2>
+      <button className="select-theme-button" onClick={() => onSelectTheme(theme)}>
+        Select Theme
+      </button>
     </div>
   );
-};
+}
 
 export default ThemeDisplay;

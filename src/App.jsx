@@ -11,7 +11,7 @@ import {
   RegisterPage,
   ProfilePage,
 } from "./pages";
-import { GameProvider } from "./components/GameContext";
+import { GameProvider } from "./components/game/GameContext";
 import { AuthProvider } from "./components/AuthContext";
  
 function App() {

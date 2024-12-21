@@ -9,6 +9,19 @@ const LoginRegister = () => {
     // Check if the token exists in localStorage
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token); // Update login status based on token presence
+
+    // Auto logout after 30 minutes (1800000 ms)
+    let logoutTimer;
+    if (token) {
+      logoutTimer = setTimeout(() => {
+        handleLogout();
+      }, 30 * 60 * 1000); // 30 minutes
+    }
+
+    // Cleanup timer on unmount
+    return () => {
+      clearTimeout(logoutTimer);
+    };
   }, []);
 
   const handleLogout = () => {
