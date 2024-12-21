@@ -2,20 +2,18 @@ import React, { useState, useEffect, useContext } from "react";
 import PlayerApi from "../components/apiCalls/PlayerService";
 import { AuthContext } from "../components/AuthContext";
 import "../css/ProfilePage.css";
+import PlayerGameHistory from "../components/profilePage/PlayerGameHistory";
 
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const [playerDetails, setPlayerDetails] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-  });
+  const [formData, setFormData] = useState({ username: "" });
 
   const playerApi = new PlayerApi();
 
   useEffect(() => {
     if (user && user.id) {
-      console.log("Auth User Details:", user); // Log user details from AuthContext
       fetchPlayerDetails(user.id);
     }
   }, [user]);
@@ -23,23 +21,12 @@ const ProfilePage = () => {
   const fetchPlayerDetails = async (id) => {
     try {
       const details = await playerApi.getPlayerById(id);
-      console.log("Fetched Player Details from API:", details); // Log player details from API
-  
-      // Use `details.name` directly for username
-      const username = details.name || "Unknown Player";
-      console.log("Resolved Username:", username); // Log resolved username
-  
-      setPlayerDetails({ ...details, username });
-      setFormData({ username });
+      setPlayerDetails({ ...details, username: details.name || "Unknown Player" });
+      setFormData({ username: details.name || "Unknown Player" });
     } catch (error) {
       console.error("Error fetching player details:", error);
-  
-      // Fallback in case of an error
-      setPlayerDetails({ username: "Unknown Player" });
-      setFormData({ username: "Unknown Player" });
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -85,6 +72,7 @@ const ProfilePage = () => {
           <button onClick={() => setEditMode(true)}>Edit</button>
         </div>
       )}
+      <PlayerGameHistory playerId={user.id} />
     </div>
   );
 };

@@ -1,47 +1,107 @@
+/* Main Profile Page Layout */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+  box-sizing: border-box; /* Include padding and borders in size calculations */
+}
+
 .profile-page {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    color: #fff;
-  }
-  
-  .profile-page h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2.5rem;
-    color: #b3ff00;
-  }
-  
-  .profile-details p {
-    margin: 10px 0;
-  }
-  
-  .profile-form label {
-    display: block;
-    margin: 10px 0;
-  }
-  
-  .profile-form input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    opacity: 0.9;
-  }
-  
+  width: 100%; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center the content vertically */
+  align-items: center; /* Center the content horizontally */
+  background-color: transparent;
+  color: #fff;
+}
+
+.profile-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  color: #b3ff00; /* Bright green color */
+}
+
+/* Profile Details and Form */
+.profile-details p {
+  margin: 10px 0;
+}
+
+.profile-form label {
+  display: block;
+  margin: 10px 0;
+}
+
+.profile-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Scrollable Game History Section */
+.game-history-container {
+  width: 90%; /* Fit most of the viewport width */
+  max-width: 1200px; /* Optional: Limit maximum width for larger screens */
+  flex-grow: 1; /* Expand to take remaining space */
+}
+
+.game-history-scrollable {
+  height: calc(80vh - 200px); /* Dynamically fit within the viewport */
+  max-height: calc(80vh - 200px); /* Prevent it from overflowing */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  margin: 0 auto; /* Center the scrollable container horizontally */
+}
+
+/* Game History Items */
+.game-history-item {
+  display: flex;
+  justify-content: space-between; /* Spread items across the row */
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1); /* Slightly lighter background */
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  width: 100%; /* Fit the width of the scrollable container */
+  box-sizing: border-box;
+}
+
+.game-history-item:hover {
+  background: rgba(255, 255, 255, 0.2); /* Highlight on hover */
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+}
+
+.game-status {
+  flex: 1;
+  text-align: right;
+}
+
+p {
+  margin: 0;
+  font-size: 14px; /* Keep text readable */
+}
