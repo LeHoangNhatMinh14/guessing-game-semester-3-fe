@@ -21,15 +21,24 @@ export default class ThemeService {
     }
   }
 
-  static async addWordToTheme(themeId, word) {
-    try {
-      const response = await axios.post("/themes/words", { themeId, word });
-      return response.data;
-    } catch (error) {
-      console.error("Error adding word to theme:", error);
-      throw error;
+  static async addWordToTheme(themeId, word, image) {
+    const formData = new FormData();
+    formData.append("themeId", themeId);
+    formData.append("word", word);
+    if (image) {
+        formData.append("image", image); // Add image if provided
     }
-  }
+
+    try {
+        const response = await axios.post("/themes/words", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error adding word to theme:", error);
+        throw error;
+    }
+}
 
   static async fetchWords(themeId) {
     try {

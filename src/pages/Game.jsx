@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from "../components/game/GameContext";
 import { AuthContext } from "../components/AuthContext";
@@ -22,9 +22,12 @@ function Game() {
     setGameOverMessage,
     wordList,
     setWordList,
+    setGameId, // Added context for gameId
   } = useContext(GameContext);
 
   const { user } = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     if (!theme || !theme.id) {
@@ -41,19 +44,26 @@ function Game() {
 
         if (user?.id) {
           const response = await gameService.startGame(user.id);
-          // Assuming `setGameId` is implemented correctly in GameContext
           setGameId(response.gameId);
         }
 
-        setStartTime(Date.now());
+        setLives(3); // Initialize lives for the game
+        setLoading(false); // Set loading to false once initialization is complete
       } catch (error) {
         console.error("Error starting game: ", error);
+        setLoading(false); // Ensure loading is false even on error
       }
     };
 
     startNewGame();
   }, [theme, navigate, setLives, setWordList, user, wordList]);
 
+  // Render loading indicator if loading
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  // Render GameEnd or GamePlay based on game state
   if (gameOver) {
     return <GameEnd />;
   }

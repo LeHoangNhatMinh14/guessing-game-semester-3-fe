@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import  { GameContext } from "./GameContext";
+import { GameContext } from "./GameContext";
 
 function GamePlay() {
   const {
@@ -29,7 +29,9 @@ function GamePlay() {
   }, [lives, currentWordIndex, wordList]);
 
   const handleGuess = () => {
-    if (currentGuess.toLowerCase() === wordList[currentWordIndex]?.toLowerCase()) {
+    const currentWord = wordList[currentWordIndex]?.word; // Extract `word` from the current object
+
+    if (currentGuess.toLowerCase() === currentWord?.toLowerCase()) {
       setScore((prevScore) => prevScore + 1);
       setCorrectGuesses((prev) => prev + 1);
       setCurrentWordIndex((prevIndex) => prevIndex + 1);
@@ -53,7 +55,16 @@ function GamePlay() {
       <h3>Incorrect Guesses: {incorrectGuesses}</h3>
       {wordList?.length > 0 && currentWordIndex < wordList.length ? (
         <>
-          <h3>Current Word: {wordList[currentWordIndex]}</h3>
+            {wordList[currentWordIndex]?.imageUrl && (
+            <img
+              src={wordList[currentWordIndex].imageUrl}
+              alt={`Hint for ${wordList[currentWordIndex].word}`}
+              style={{ width: "100px", height: "100px" }} // Adjust size as needed
+            />
+          )}
+          <h3>
+            Current Word: {wordList[currentWordIndex]?.word} {/* Display the `word` */}
+          </h3>
           <input
             type="text"
             value={currentGuess}

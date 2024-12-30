@@ -12,8 +12,10 @@ function GameEnd() {
     setLives(0);
     setCorrectGuesses(0);
     setIncorrectGuesses(0);
+    setCurrentWordIndex(0);
+    setWordList([]);
     navigate("/");
-  };
+};
 
   return (
     <div>

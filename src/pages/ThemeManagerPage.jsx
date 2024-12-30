@@ -55,7 +55,7 @@ class ThemeManagerPage extends Component {
   render() {
     const { themeName, themes, notification } = this.state;
     return (
-      <div>
+      <div className="theme-manager-container">
         <h1>Admin Page</h1>
         {notification && <div className="notification">{notification}</div>}
 

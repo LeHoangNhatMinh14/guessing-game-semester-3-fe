@@ -3,6 +3,7 @@ import ThemeService from "./apiCalls/ThemeService";
 
 const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   const [word, setWord] = useState("");
+  const [image, setImage] = useState(null);
   const [words, setWords] = useState([]);
 
   // Function to fetch words for the current theme
@@ -16,16 +17,20 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
     }
   };
 
-  // Function to add a new word to the theme
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]); // Get the uploaded file
+  };
+
   const addWordToTheme = async () => {
     if (!word.trim()) {
       setNotification("Word cannot be empty.");
       return;
     }
     try {
-      await ThemeService.addWordToTheme(theme.id, word);
+      await ThemeService.addWordToTheme(theme.id, word, image); // Include image in the API call
       setNotification(`Word "${word}" added to theme "${theme.name}"!`);
       setWord("");
+      setImage(null); // Reset the image
       fetchWords(); // Refresh the word list after adding
     } catch (error) {
       setNotification("An error occurred while adding the word.");
@@ -66,32 +71,49 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   return (
     <div className="theme-card">
       <h3>{theme.name}</h3>
-
-      {/* Delete Theme Button */}
-      <button onClick={deleteTheme} className="delete-theme-button">
-        Delete Theme
-      </button>
-
-      {/* Automatically fetch words when this button is pressed */}
-      <button onClick={fetchWords}>View Words</button>
-
+      <div className="button-group">
+        {/* Delete Theme Button */}
+        <button onClick={deleteTheme} className="delete-theme-button">
+          Delete Theme
+        </button>
+    
+        {/* View Words Button */}
+        <button onClick={fetchWords} className="view-words-button">
+          View Words
+        </button>
+      </div>
+  
       {/* Add Word Section */}
-      <div>
+      <div className="add-word-section">
         <input
           type="text"
           placeholder="Word"
           value={word}
           onChange={(e) => setWord(e.target.value)}
+          className="add-word-input"
         />
-        <button onClick={addWordToTheme}>Add Word</button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="add-word-file-input"
+        />
+        <button onClick={addWordToTheme} className="add-word-button">
+          Add Word
+        </button>
       </div>
-
+  
       {/* Display Words */}
-      <ul>
+      <ul className="words-list">
         {words.map((w, index) => (
-          <li key={index}>
-            {w}{" "}
-            <button onClick={() => deleteWordFromTheme(w)}>Delete</button>
+          <li key={index} className="word-item">
+            <span>{w.word}</span>
+            <button
+              onClick={() => deleteWordFromTheme(w.word)}
+              className="delete-word-button"
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>

@@ -3,12 +3,12 @@ import React, { createContext, useState } from "react";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  const [lives, setLives] = useState(0);
+  const [lives, setLives] = useState(3);
   const [theme, setTheme] = useState("");
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameOverMessage, setGameOverMessage] = useState("");
-  const [wordList, setWordList] = useState([]); // Add wordList and setWordList here
+  const [wordList, setWordList] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [correctGuesses, setCorrectGuesses] = useState(0);
   const [incorrectGuesses, setIncorrectGuesses] = useState(0);
@@ -27,7 +27,7 @@ export const GameProvider = ({ children }) => {
         gameOverMessage,
         setGameOverMessage,
         wordList,
-        setWordList, // Ensure these are provided
+        setWordList,
         currentWordIndex,
         setCurrentWordIndex,
         correctGuesses,
