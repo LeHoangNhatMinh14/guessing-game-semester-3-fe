@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { GameContext } from "./GameContext";
+import GameApi from "../apiCalls/GameService";
 
 function GamePlay() {
   const {
@@ -16,6 +17,7 @@ function GamePlay() {
     setCorrectGuesses,
     incorrectGuesses,
     setIncorrectGuesses,
+    time,
   } = useContext(GameContext);
 
   const [currentGuess, setCurrentGuess] = useState("");
@@ -29,9 +31,9 @@ function GamePlay() {
   }, [lives, currentWordIndex, wordList]);
 
   const handleGuess = () => {
-    const currentWord = wordList[currentWordIndex]?.word; // Extract `word` from the current object
+    const currentWord = wordList[currentWordIndex]?.word;
 
-    if (currentGuess.toLowerCase() === currentWord?.toLowerCase()) {
+    if (currentGuess.trim().toLowerCase() === currentWord?.toLowerCase()) {
       setScore((prevScore) => prevScore + 1);
       setCorrectGuesses((prev) => prev + 1);
       setCurrentWordIndex((prevIndex) => prevIndex + 1);
@@ -42,29 +44,50 @@ function GamePlay() {
     }
   };
 
-  const handleGameEnd = (message) => {
+  const handleGameEnd = async (message) => {
     setGameOver(true);
     setGameOverMessage(message);
+
+    const storedGameId = localStorage.getItem("gameId"); // Retrieve gameId
+    if (!storedGameId) {
+      console.error("No gameId found in localStorage");
+      return;
+    }
+
+    const endGameRequest = {
+      gameId: storedGameId,
+      correctGuesses,
+      incorrectGuesses,
+      time,
+      status: message === "You won the game!" ? "COMPLETED" : "FAILED",
+    };
+
+    try {
+      await new GameApi().endGame(endGameRequest); // Use GameApi instance
+      console.log("Game results saved successfully.");
+      localStorage.removeItem("gameId"); // Clean up after ending the game
+    } catch (error) {
+      console.error("Error saving game results:", error);
+    }
   };
 
   return (
     <div>
       <h1>Lives: {lives}</h1>
       <h2>Score: {score}</h2>
+      <h3>Time: {time} seconds</h3> {/* Display elapsed time */}
       <h3>Correct Guesses: {correctGuesses}</h3>
       <h3>Incorrect Guesses: {incorrectGuesses}</h3>
       {wordList?.length > 0 && currentWordIndex < wordList.length ? (
         <>
-            {wordList[currentWordIndex]?.imageUrl && (
+          {wordList[currentWordIndex]?.imageUrl && (
             <img
               src={wordList[currentWordIndex].imageUrl}
               alt={`Hint for ${wordList[currentWordIndex].word}`}
-              style={{ width: "100px", height: "100px" }} // Adjust size as needed
+              style={{ width: "100px", height: "100px" }}
             />
           )}
-          <h3>
-            Current Word: {wordList[currentWordIndex]?.word} {/* Display the `word` */}
-          </h3>
+          <h3>Current Word: {wordList[currentWordIndex]?.word}</h3>
           <input
             type="text"
             value={currentGuess}

@@ -22,12 +22,15 @@ function Game() {
     setGameOverMessage,
     wordList,
     setWordList,
-    setGameId, // Added context for gameId
+    setGameId,
+    time,
+    setTime,
   } = useContext(GameContext);
 
   const { user } = useContext(AuthContext);
 
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     if (!theme || !theme.id) {
@@ -37,33 +40,57 @@ function Game() {
 
     const startNewGame = async () => {
       try {
+        if (!user?.id) {
+          console.error("User ID is required to start the game.");
+          setLoading(false);
+          return;
+        }
+
         if (!wordList || wordList.length === 0) {
           const fetchedWords = await ThemeService.fetchWords(theme.id);
           setWordList(fetchedWords);
         }
 
-        if (user?.id) {
-          const response = await gameService.startGame(user.id);
-          setGameId(response.gameId);
-        }
+        const response = await gameService.startGame(user.id);
+        setGameId(response.gameId); // Update context with the game ID
 
-        setLives(3); // Initialize lives for the game
-        setLoading(false); // Set loading to false once initialization is complete
+        setScore(0); // Reset score
+        setTime(0); // Reset time
+        startTimer();
+        setLoading(false);
       } catch (error) {
         console.error("Error starting game: ", error);
-        setLoading(false); // Ensure loading is false even on error
+        setLoading(false);
       }
     };
 
+    const startTimer = () => {
+      const startTime = Date.now();
+      const interval = setInterval(() => {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        setTime(elapsedTime);
+      }, 1000);
+      setTimer(interval);
+    };
+
     startNewGame();
+
+    return () => {
+      if (timer) clearInterval(timer); // Clear timer on unmount
+    };
   }, [theme, navigate, setLives, setWordList, user, wordList]);
 
-  // Render loading indicator if loading
+  useEffect(() => {
+    if (gameOver && timer) {
+      clearInterval(timer); // Stop timer when the game ends
+      setTimer(null); // Reset timer reference
+    }
+  }, [gameOver, timer]);
+
   if (loading) {
     return <p>Loading...</p>;
   }
 
-  // Render GameEnd or GamePlay based on game state
   if (gameOver) {
     return <GameEnd />;
   }

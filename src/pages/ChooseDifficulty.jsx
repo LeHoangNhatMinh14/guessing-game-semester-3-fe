@@ -4,11 +4,7 @@ import { GameContext } from "../components/game/GameContext";
 
 function ChooseDifficulty() {
   const navigate = useNavigate();
-  const { setLives, lives } = useContext(GameContext);
-
-  useEffect(() => {
-    console.log("ChooseDifficulty mounted");
-  }, []);
+  const { setLives } = useContext(GameContext);
 
   const handleDifficulty = (difficulty) => {
     let lives;
@@ -25,14 +21,9 @@ function ChooseDifficulty() {
       default:
         lives = 5;
     }
-    setLives(lives);
-    console.log("Lives set in ChooseDifficulty: ", lives);
-    navigate("/choose-theme");
+    setLives(lives); // Update the lives in context
+    navigate("/choose-theme"); // Navigate to the next page
   };
-
-  useEffect(() => {
-    console.log("Lives from context in ChooseDifficulty after setting: ", lives);
-  }, [lives]);
 
   return (
     <div>
