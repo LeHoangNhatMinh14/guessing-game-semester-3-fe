@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import PlayerApi from "../components/apiCalls/PlayerService";
+import GameApi from "../components/apiCalls/GameService";
 import { AuthContext } from "../components/AuthContext";
 import "../css/ProfilePage.css";
 import PlayerGameHistory from "../components/profilePage/PlayerGameHistory";
@@ -7,14 +8,21 @@ import PlayerGameHistory from "../components/profilePage/PlayerGameHistory";
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const [playerDetails, setPlayerDetails] = useState(null);
+  const [gameStats, setGameStats] = useState({
+    totalCorrectGuesses: 0,
+    totalWrongGuesses: 0,
+    accuracy: 0,
+  });
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ username: "" });
 
   const playerApi = new PlayerApi();
+  const gameApi = new GameApi();
 
   useEffect(() => {
     if (user && user.id) {
       fetchPlayerDetails(user.id);
+      fetchGameStats(user.id);
     }
   }, [user]);
 
@@ -25,6 +33,30 @@ const ProfilePage = () => {
       setFormData({ username: details.name || "Unknown Player" });
     } catch (error) {
       console.error("Error fetching player details:", error);
+    }
+  };
+
+  const fetchGameStats = async (playerId) => {
+    try {
+      const gameHistory = await gameApi.getPlayerGameHistory(playerId);
+      const totalCorrectGuesses = gameHistory.games.reduce(
+        (total, game) => total + (game.correctGuesses || 0),
+        0
+      );
+      const totalWrongGuesses = gameHistory.games.reduce(
+        (total, game) => total + (game.wrongGuesses || 0),
+        0
+      );
+      const totalGuesses = totalCorrectGuesses + totalWrongGuesses;
+      const accuracy = totalGuesses > 0 ? ((totalCorrectGuesses / totalGuesses) * 100).toFixed(2) : 0;
+
+      setGameStats({
+        totalCorrectGuesses,
+        totalWrongGuesses,
+        accuracy,
+      });
+    } catch (error) {
+      console.error("Error fetching game stats:", error);
     }
   };
 
@@ -72,6 +104,16 @@ const ProfilePage = () => {
           <button onClick={() => setEditMode(true)}>Edit</button>
         </div>
       )}
+
+      {/* Game Stats Section */}
+      <div className="game-stats">
+        <h2>Game Stats</h2>
+        <p><strong>Total Correct Guesses:</strong> {gameStats.totalCorrectGuesses}</p>
+        <p><strong>Total Wrong Guesses:</strong> {gameStats.totalWrongGuesses}</p>
+        <p><strong>Accuracy:</strong> {gameStats.accuracy}%</p>
+      </div>
+
+      {/* Game History Section */}
       <PlayerGameHistory playerId={user.id} />
     </div>
   );
