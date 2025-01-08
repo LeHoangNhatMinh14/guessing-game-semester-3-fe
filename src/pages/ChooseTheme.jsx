@@ -24,7 +24,9 @@ function ChooseTheme() {
   }, []);
 
   const handleThemeSelect = (selectedTheme) => {
+    // Ensure the selected theme includes the name
     setTheme(selectedTheme);
+    console.log("chose theme", selectedTheme)
     navigate("/game");
   };
 
@@ -35,13 +37,13 @@ function ChooseTheme() {
         {themes.length > 0 ? (
           themes.map((theme) => (
             <ThemeDisplay
-              key={theme.id}
+              key={theme.id || theme.name} // Use `name` as key for dynamic themes
               theme={theme}
               onSelectTheme={handleThemeSelect}
             />
           ))
         ) : (
-          <p>Loading themes...</p>
+          <p>Loading...</p>
         )}
       </div>
     </div>

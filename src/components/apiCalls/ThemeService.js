@@ -40,35 +40,47 @@ export default class ThemeService {
     }
 }
 
-  static async fetchWords(themeId) {
-    try {
-      const response = await axios.get(`/themes/${themeId}/words`);
-      return response.data.words;
-    } catch (error) {
-      console.error("Error fetching words:", error);
-      throw error;
-    }
-  }
+static async fetchWords(themeId, name = null) {
+  try {
+    // Construct the URL with optional query parameter
+    const url = name 
+      ? `/themes/${themeId}/words?name=${encodeURIComponent(name)}`
+      : `/themes/${themeId}/words`;
 
-  static async deleteTheme(themeId) {
-    try {
-      const response = await axios.delete(`/themes/${themeId}`);
-      return response.status; // Returns the status (204 for successful deletion)
-    } catch (error) {
-      console.error("Error deleting theme:", error);
-      throw error;
-    }
-  }
+    console.log(name)
+    console.log(themeId)
+    const response = await axios.get(url);
 
-  static async deleteWordFromTheme(themeId, word) {
-    try {
-      const response = await axios.put(`/themes/${themeId}/words`, word, {
-        headers: { "Content-Type": "text/plain" },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting word from theme:", error);
-      throw error;
-    }
+    // Assuming the response contains a list of WordImage objects
+    return response.data.words || [];
+  } catch (error) {
+    console.error("Error fetching words:", error);
+    throw error;
   }
+}
+
+static async deleteTheme(themeId) {
+  try {
+    const response = await axios.delete(`/themes/${themeId}`);
+    return response.status; // Returns the status (204 for successful deletion)
+  } catch (error) {
+    console.error("Error deleting theme:", error);
+    throw error;
+  }
+}
+
+static async deleteWordFromTheme(themeId, word) {
+  try {
+    const response = await axios.put(
+      `/themes/${themeId}/words`,
+      { word }, // Adjust payload if needed
+      { headers: { "Content-Type": "application/json" } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting word from theme:", error);
+    throw error;
+  }
+}
+
 }

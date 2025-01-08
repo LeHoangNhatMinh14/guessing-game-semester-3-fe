@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from "../components/game/GameContext";
-import { AuthContext } from "../components/AuthContext";
 import GamePlay from "../components/game/GamePlay";
 import GameEnd from "../components/game/GameEnd";
 import GameService from "../components/apiCalls/GameService";
 import ThemeService from "../components/apiCalls/ThemeService";
+import { AuthContext } from "../components/AuthContext";
 
 function Game() {
   const navigate = useNavigate();
   const gameService = new GameService();
+  const { user } = useContext(AuthContext);
 
   const {
-    lives,
-    setLives,
     theme,
     score,
     setScore,
@@ -27,39 +26,38 @@ function Game() {
     setTime,
   } = useContext(GameContext);
 
-  const { user } = useContext(AuthContext);
-
   const [loading, setLoading] = useState(true);
   const [timer, setTimer] = useState(null);
 
   useEffect(() => {
-    if (!theme || !theme.id) {
+    if (!user) {
+      console.error("User not authenticated. Redirecting to login.");
+      navigate("/login");
+      return;
+    }
+
+    if (!theme || (!theme.id && !theme.name)) {
+      console.error("Theme is not properly set. Redirecting to choose theme.");
       navigate("/choose-theme");
       return;
     }
 
     const startNewGame = async () => {
       try {
-        if (!user?.id) {
-          console.error("User ID is required to start the game.");
-          setLoading(false);
-          return;
-        }
+        // Fetch words for the selected theme
+        const fetchedWords = await ThemeService.fetchWords(theme.id, theme.name);
+        setWordList(fetchedWords);
 
-        if (!wordList || wordList.length === 0) {
-          const fetchedWords = await ThemeService.fetchWords(theme.id);
-          setWordList(fetchedWords);
-        }
+        // Start the game by sending playerID and themeID
+        const response = await gameService.startGame(user.id, theme.id);
+        setGameId(response.gameId);
 
-        const response = await gameService.startGame(user.id);
-        setGameId(response.gameId); // Update context with the game ID
-
-        setScore(0); // Reset score
-        setTime(0); // Reset time
+        setScore(0);
+        setTime(0);
         startTimer();
         setLoading(false);
       } catch (error) {
-        console.error("Error starting game: ", error);
+        console.error("Error starting game:", error);
         setLoading(false);
       }
     };
@@ -76,14 +74,14 @@ function Game() {
     startNewGame();
 
     return () => {
-      if (timer) clearInterval(timer); // Clear timer on unmount
+      if (timer) clearInterval(timer); // Cleanup timer
     };
-  }, [theme, navigate, setLives, setWordList, user, wordList]);
+  }, [user, theme, navigate, setWordList, setGameId]);
 
   useEffect(() => {
     if (gameOver && timer) {
-      clearInterval(timer); // Stop timer when the game ends
-      setTimer(null); // Reset timer reference
+      clearInterval(timer); // Stop the timer when the game ends
+      setTimer(null);
     }
   }, [gameOver, timer]);
 

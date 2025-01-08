@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from "../components/game/GameContext";
 
@@ -21,8 +21,8 @@ function ChooseDifficulty() {
       default:
         lives = 5;
     }
-    setLives(lives); // Update the lives in context
-    navigate("/choose-theme"); // Navigate to the next page
+    setLives(lives);
+    navigate("/choose-theme");
   };
 
   return (

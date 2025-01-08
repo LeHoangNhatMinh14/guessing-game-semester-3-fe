@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { GameContext } from "./GameContext";
-import GameApi from "../apiCalls/GameService";
+import GameApi from "../apiCalls/GameService"; // Adjust the path if needed
+
+const gameService = new GameApi(); // Ensure instance creation
 
 function GamePlay() {
   const {
@@ -18,17 +20,10 @@ function GamePlay() {
     incorrectGuesses,
     setIncorrectGuesses,
     time,
+    gameId,
   } = useContext(GameContext);
 
   const [currentGuess, setCurrentGuess] = useState("");
-
-  useEffect(() => {
-    if (lives <= 0) {
-      handleGameEnd("You lost the game!");
-    } else if (wordList?.length > 0 && currentWordIndex >= wordList.length) {
-      handleGameEnd("You won the game!");
-    }
-  }, [lives, currentWordIndex, wordList]);
 
   const handleGuess = () => {
     const currentWord = wordList[currentWordIndex]?.word;
@@ -48,14 +43,8 @@ function GamePlay() {
     setGameOver(true);
     setGameOverMessage(message);
 
-    const storedGameId = localStorage.getItem("gameId"); // Retrieve gameId
-    if (!storedGameId) {
-      console.error("No gameId found in localStorage");
-      return;
-    }
-
     const endGameRequest = {
-      gameId: storedGameId,
+      gameId,
       correctGuesses,
       incorrectGuesses,
       time,
@@ -63,30 +52,35 @@ function GamePlay() {
     };
 
     try {
-      await new GameApi().endGame(endGameRequest); // Use GameApi instance
+      await gameService.endGame(endGameRequest)
       console.log("Game results saved successfully.");
-      localStorage.removeItem("gameId"); // Clean up after ending the game
     } catch (error) {
       console.error("Error saving game results:", error);
     }
   };
 
+  useEffect(() => {
+    if (lives <= 0) {
+      handleGameEnd("You lost the game!");
+    } else if (wordList?.length > 0 && currentWordIndex >= wordList.length) {
+      handleGameEnd("You won the game!");
+    }
+  }, [lives, currentWordIndex, wordList]);
+
   return (
     <div>
       <h1>Lives: {lives}</h1>
       <h2>Score: {score}</h2>
-      <h3>Time: {time} seconds</h3> {/* Display elapsed time */}
+      <h3>Time: {time} seconds</h3>
       <h3>Correct Guesses: {correctGuesses}</h3>
       <h3>Incorrect Guesses: {incorrectGuesses}</h3>
       {wordList?.length > 0 && currentWordIndex < wordList.length ? (
         <>
-          {wordList[currentWordIndex]?.imageUrl && (
-            <img
-              src={wordList[currentWordIndex].imageUrl}
-              alt={`Hint for ${wordList[currentWordIndex].word}`}
-              style={{ width: "100px", height: "100px" }}
-            />
-          )}
+          <img
+            src={wordList[currentWordIndex]?.imageUrl}
+            alt={`Hint for ${wordList[currentWordIndex]?.word}`}
+            style={{ width: "100px", height: "100px" }}
+          />
           <h3>Current Word: {wordList[currentWordIndex]?.word}</h3>
           <input
             type="text"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlayerService from '../components/apiCalls/PlayerService';
+import '../css/RegisterPage.css';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -11,15 +12,16 @@ const RegisterPage = () => {
 
   const playerApi = new PlayerService();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
     if (!name.trim() || !password.trim()) {
       setError('Please fill in all fields.');
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
+
     try {
       const response = await playerApi.registerPlayer({ name, password });
       if (response) {
@@ -40,26 +42,28 @@ const RegisterPage = () => {
         setError('An unexpected error occurred. Please try again.');
       }
     }
-  };  
+  };
 
   return (
     <div className="register-page">
       <h2>Register</h2>
-      <input
-        type="text"
-        placeholder="Enter your name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Enter your password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleRegister} disabled={loading}>
-        {loading ? 'Registering...' : 'Register'}
-      </button>
+      <form onSubmit={handleRegister}>
+        <input
+          type="text"
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
+      </form>
       {error && <p className="error-message">{error}</p>}
     </div>
   );

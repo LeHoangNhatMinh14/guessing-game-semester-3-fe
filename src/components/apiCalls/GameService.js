@@ -23,15 +23,16 @@ export default class GameApi {
   }
 
   // Start a new game
-  async startGame(startGameRequest) {
+  async startGame(playerID, themeID) {
     try {
+      const startGameRequest = { playerID, themeID };
       console.log("startGameRequest:", startGameRequest); // Log request object
       const response = await this.apiClient.post("/startNew", startGameRequest);
       const { gameId } = response.data;
-
+  
       // Store the gameId in localStorage
       localStorage.setItem("gameId", gameId);
-
+  
       console.log("Game started successfully with gameId:", gameId);
       return response.data;
     } catch (error) {
@@ -39,6 +40,7 @@ export default class GameApi {
       throw error;
     }
   }
+  
 
   // End a game
   async endGame(endGameRequest) {

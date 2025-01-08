@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlayerService from '../components/apiCalls/PlayerService';
 import { AuthContext } from '../components/AuthContext'; // Import AuthContext
+import '../css/LoginPage.css';
 
 const LoginPage = () => {
   const [name, setName] = useState('');

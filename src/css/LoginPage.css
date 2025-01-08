@@ -1,0 +1,202 @@
+/* Styling for Login and Register Pages */
+.auth-page,
+.register-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  font-family: var(--font-family);
+  color: var(--color);
+}
+
+.auth-page h2,
+.register-page h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  text-shadow: 0px 0px 0.5em var(--accent), 0px 0px 1.5em var(--hover-color);
+  letter-spacing: 0.1em;
+}
+
+form {
+  width: 320px;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--button-bg);
+  box-shadow: 0px 0px 1em var(--hover-color), 0px 0px 2em var(--accent);
+}
+
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid var(--accent);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.7); /* Semi-transparent background for better contrast */
+    color: var(--color);
+    font-size: 1rem;
+    text-shadow: 0px 0px 0.5em var(--hover-color);
+    outline: none;
+    transition: box-shadow 0.3s, border 0.3s;
+  }
+  
+  input:focus {
+    border-color: var(--hover-color);
+    box-shadow: 0px 0px 0.5em var(--accent), 0px 0px 1em var(--hover-color);
+  }
+  
+  input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic; /* Optional for better styling */
+  }  
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background: var(--accent);
+  color: var(--background-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 0.75em var(--accent), 0px 0px 1.5em var(--hover-color);
+}
+
+button:disabled {
+  background: #888;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: var(--color);
+}
+
+p button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+p button:hover {
+  color: var(--hover-color);
+}
+
+.register-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--background-color);
+    font-family: var(--font-family);
+    color: var(--color);
+  }
+  
+  .register-page h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+    text-shadow: 0px 0px 0.5em var(--accent), 0px 0px 1.5em var(--hover-color);
+    letter-spacing: 0.1em;
+  }
+  
+  .register-page form {
+    width: 320px;
+    padding: 20px;
+    border-radius: 10px;
+    background: var(--button-bg);
+    box-shadow: 0px 0px 1em var(--hover-color), 0px 0px 2em var(--accent);
+  }
+  
+  .register-page input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid var(--accent);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--color);
+    font-size: 1rem;
+    text-shadow: 0px 0px 0.5em var(--hover-color);
+    outline: none;
+    transition: box-shadow 0.3s, border 0.3s;
+  }
+  
+  .register-page input:focus {
+    border-color: var(--hover-color);
+    box-shadow: 0px 0px 0.5em var(--accent), 0px 0px 1em var(--hover-color);
+  }
+  
+  .register-page input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+  }
+  
+  .register-page button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background: var(--accent);
+    color: var(--background-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .register-page button:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 0.75em var(--accent), 0px 0px 1.5em var(--hover-color);
+  }
+  
+  .register-page button:disabled {
+    background: #888;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .register-page p {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--color);
+  }
+  
+  .register-page p button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .register-page p button:hover {
+    color: var(--hover-color);
+  }
+  
