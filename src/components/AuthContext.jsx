@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import  { jwtDecode } from "jwt-decode"; // Correct way to import jwtDecode
+import  { jwtDecode } from "../../node_modules/jwt-decode"; // Correct way to import jwtDecode
 
 export const AuthContext = createContext();
 

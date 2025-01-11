@@ -83,4 +83,14 @@ static async deleteWordFromTheme(themeId, word) {
   }
 }
 
+static async fetchStatistics(startDate, endDate) {
+  try {
+    const response = await axios.get(`/themes/statistics?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+    return response.data; // Assuming response contains an array of statistics
+  } catch (error) {
+    console.error("Error fetching theme statistics:", error);
+    throw error;
+  }
+}
+
 }

@@ -52,7 +52,7 @@ function GamePlay() {
     };
 
     try {
-      await gameService.endGame(endGameRequest)
+      await gameService.endGame(endGameRequest);
       console.log("Game results saved successfully.");
     } catch (error) {
       console.error("Error saving game results:", error);
@@ -67,6 +67,13 @@ function GamePlay() {
     }
   }, [lives, currentWordIndex, wordList]);
 
+  // Calculate blur level based on the number of guesses
+  const blurLevel = Math.floor(correctGuesses / 10) * 2; // Increment blur every 10 guesses by 2px
+
+  const endGameManually = () => {
+    handleGameEnd("Game ended by the user.");
+  };
+
   return (
     <div>
       <h1>Lives: {lives}</h1>
@@ -79,7 +86,11 @@ function GamePlay() {
           <img
             src={wordList[currentWordIndex]?.imageUrl}
             alt={`Hint for ${wordList[currentWordIndex]?.word}`}
-            style={{ width: "100px", height: "100px" }}
+            style={{
+              width: "100px",
+              height: "100px",
+              filter: `blur(${blurLevel}px)`, // Apply dynamic blur
+            }}
           />
           <h3>Current Word: {wordList[currentWordIndex]?.word}</h3>
           <input
@@ -88,6 +99,9 @@ function GamePlay() {
             onChange={(e) => setCurrentGuess(e.target.value)}
           />
           <button onClick={handleGuess}>Guess</button>
+          <button onClick={endGameManually} style={{ marginLeft: "10px" }}>
+            End Game
+          </button>
         </>
       ) : (
         <p>Loading words...</p>

@@ -7,8 +7,11 @@ function AdminPage() {
     <div>
       <h1>Admin page</h1>
       <title>Theme Manager</title>
-      <NavLink to="/themeManagement">  {}
+      <NavLink to="/themeManagement">
         <button>Theme Manager</button>
+      </NavLink>
+      <NavLink to="/stats">
+        <button>Player stats</button>
       </NavLink>
     </div>
   )

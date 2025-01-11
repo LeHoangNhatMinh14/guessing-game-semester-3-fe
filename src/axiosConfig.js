@@ -1,34 +1,35 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Set the base URL for all requests
-axios.defaults.baseURL = 'http://localhost:8080';
+const apiClient = axios.create({
+  baseURL: "http://localhost:8080", // Replace with your API base URL
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-// Create an interceptor to add the Authorization header with the token
-axios.interceptors.request.use(
+// Interceptor to attach token
+apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-    console.log('Request Headers:', config.headers); // Log headers
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-
-// Optional: Create a response interceptor to handle 401 errors (e.g., when the token is expired)
-axios.interceptors.response.use(
+// Interceptor to handle errors
+apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Clear any existing token since it is no longer valid
-      localStorage.removeItem('token');
-      // Redirect user to the login page for re-authentication
-      window.location.href = '/login';
+    if (error.response?.status === 401) {
+      console.error("Unauthorized! Token may have expired.");
+      // Optionally trigger a logout by clearing token
+      localStorage.removeItem("token");
     }
-    return Promise.reject(error);
+    return Promise.reject(error); // Let the caller handle navigation or user feedback
   }
 );
 
-export default axios;
+export default apiClient;
