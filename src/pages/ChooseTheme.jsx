@@ -24,26 +24,26 @@ function ChooseTheme() {
   }, []);
 
   const handleThemeSelect = (selectedTheme) => {
-    // Ensure the selected theme includes the name
     setTheme(selectedTheme);
-    console.log("chose theme", selectedTheme)
     navigate("/game");
   };
 
   return (
-    <div className="choose-theme-container">
-      <h1 className="choose-theme-title">Choose Theme</h1>
-      <div className="theme-cards-container">
+    <div data-cy="choose-theme-container" className="choose-theme-container">
+      <h1 data-cy="choose-theme-title" className="choose-theme-title">
+        Choose Theme
+      </h1>
+      <div data-cy="theme-cards-container" className="theme-cards-container">
         {themes.length > 0 ? (
           themes.map((theme) => (
             <ThemeDisplay
-              key={theme.id || theme.name} // Use `name` as key for dynamic themes
+              key={theme.id || theme.name}
               theme={theme}
               onSelectTheme={handleThemeSelect}
             />
           ))
         ) : (
-          <p>Loading...</p>
+          <p data-cy="loading-themes">Loading...</p>
         )}
       </div>
     </div>

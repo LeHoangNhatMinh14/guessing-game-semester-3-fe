@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import  { jwtDecode } from "../../node_modules/jwt-decode"; // Correct way to import jwtDecode
+import { jwtDecode }  from "jwt-decode"; // Correct way to import jwtDecode
 
 export const AuthContext = createContext();
 
@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser, // Include setUser in the context
         login,
         logout,
       }}

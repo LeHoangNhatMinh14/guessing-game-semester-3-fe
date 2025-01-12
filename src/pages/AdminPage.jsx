@@ -11,7 +11,7 @@ function AdminPage() {
         <button>Theme Manager</button>
       </NavLink>
       <NavLink to="/stats">
-        <button>Player stats</button>
+        <button data-cy="stats-page">Player stats</button>
       </NavLink>
     </div>
   )

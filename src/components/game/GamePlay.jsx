@@ -20,10 +20,11 @@ function GamePlay() {
     incorrectGuesses,
     setIncorrectGuesses,
     time,
-    gameId,
+    gameId, // gameId will be `null` for guest users
   } = useContext(GameContext);
 
   const [currentGuess, setCurrentGuess] = useState("");
+  const [feedback, setFeedback] = useState("");
 
   const handleGuess = () => {
     const currentWord = wordList[currentWordIndex]?.word;
@@ -32,10 +33,12 @@ function GamePlay() {
       setScore((prevScore) => prevScore + 1);
       setCorrectGuesses((prev) => prev + 1);
       setCurrentWordIndex((prevIndex) => prevIndex + 1);
+      setFeedback("Correct!");
       setCurrentGuess("");
     } else {
       setLives((prevLives) => prevLives - 1);
       setIncorrectGuesses((prev) => prev + 1);
+      setFeedback("Wrong!");
     }
   };
 
@@ -43,19 +46,23 @@ function GamePlay() {
     setGameOver(true);
     setGameOverMessage(message);
 
-    const endGameRequest = {
-      gameId,
-      correctGuesses,
-      incorrectGuesses,
-      time,
-      status: message === "You won the game!" ? "COMPLETED" : "FAILED",
-    };
+    if (gameId) {
+      const endGameRequest = {
+        gameId,
+        correctGuesses,
+        incorrectGuesses,
+        time,
+        status: message === "You won the game!" ? "COMPLETED" : "FAILED",
+      };
 
-    try {
-      await gameService.endGame(endGameRequest);
-      console.log("Game results saved successfully.");
-    } catch (error) {
-      console.error("Error saving game results:", error);
+      try {
+        await gameService.endGame(endGameRequest);
+        console.log("Game results saved successfully.");
+      } catch (error) {
+        console.error("Error saving game results:", error);
+      }
+    } else {
+      console.log("Guest user: Game results are not saved.");
     }
   };
 
@@ -67,44 +74,48 @@ function GamePlay() {
     }
   }, [lives, currentWordIndex, wordList]);
 
-  // Calculate blur level based on the number of guesses
-  const blurLevel = Math.floor(correctGuesses / 10) * 2; // Increment blur every 10 guesses by 2px
-
   const endGameManually = () => {
     handleGameEnd("Game ended by the user.");
   };
 
   return (
     <div>
-      <h1>Lives: {lives}</h1>
-      <h2>Score: {score}</h2>
-      <h3>Time: {time} seconds</h3>
-      <h3>Correct Guesses: {correctGuesses}</h3>
-      <h3>Incorrect Guesses: {incorrectGuesses}</h3>
+      <h1 data-cy="lives">Lives: {lives}</h1>
+      <h2 data-cy="score">Score: {score}</h2>
+      <h3 data-cy="time">Time: {time} seconds</h3>
+      <h3 data-cy="correct-guesses">Correct Guesses: {correctGuesses}</h3>
+      <h3 data-cy="incorrect-guesses">Incorrect Guesses: {incorrectGuesses}</h3>
+      {feedback && <p data-cy="feedback">{feedback}</p>}
       {wordList?.length > 0 && currentWordIndex < wordList.length ? (
         <>
           <img
+            data-cy="hint-image"
             src={wordList[currentWordIndex]?.imageUrl}
             alt={`Hint for ${wordList[currentWordIndex]?.word}`}
             style={{
               width: "100px",
               height: "100px",
-              filter: `blur(${blurLevel}px)`, // Apply dynamic blur
             }}
           />
-          <h3>Current Word: {wordList[currentWordIndex]?.word}</h3>
           <input
+            data-cy="guess-input"
             type="text"
             value={currentGuess}
             onChange={(e) => setCurrentGuess(e.target.value)}
           />
-          <button onClick={handleGuess}>Guess</button>
-          <button onClick={endGameManually} style={{ marginLeft: "10px" }}>
+          <button data-cy="guess-button" onClick={handleGuess}>
+            Guess
+          </button>
+          <button
+            data-cy="end-game-button"
+            onClick={endGameManually}
+            style={{ marginLeft: "10px" }}
+          >
             End Game
           </button>
         </>
       ) : (
-        <p>Loading words...</p>
+        <p data-cy="loading">Loading words...</p>
       )}
     </div>
   );

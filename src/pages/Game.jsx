@@ -30,12 +30,6 @@ function Game() {
   const [timer, setTimer] = useState(null);
 
   useEffect(() => {
-    if (!user) {
-      console.error("User not authenticated. Redirecting to login.");
-      navigate("/login");
-      return;
-    }
-
     if (!theme || (!theme.id && !theme.name)) {
       console.error("Theme is not properly set. Redirecting to choose theme.");
       navigate("/choose-theme");
@@ -48,9 +42,11 @@ function Game() {
         const fetchedWords = await ThemeService.fetchWords(theme.id, theme.name);
         setWordList(fetchedWords);
 
-        // Start the game by sending playerID and themeID
-        const response = await gameService.startGame(user.id, theme.id);
-        setGameId(response.gameId);
+        if (user) {
+          // Only call `startGame` for authenticated users
+          const response = await gameService.startGame(user.id, theme.id);
+          setGameId(response.gameId);
+        }
 
         setScore(0);
         setTime(0);
@@ -82,8 +78,15 @@ function Game() {
     if (gameOver && timer) {
       clearInterval(timer); // Stop the timer when the game ends
       setTimer(null);
+
+      if (user) {
+        // Only call `endGame` for authenticated users
+        gameService
+          .endGame({ gameId: setGameId, score })
+          .catch((error) => console.error("Error ending game:", error));
+      }
     }
-  }, [gameOver, timer]);
+  }, [gameOver, timer, user, gameService, setGameId, score]);
 
   if (loading) {
     return <p>Loading...</p>;

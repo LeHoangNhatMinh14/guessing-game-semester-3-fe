@@ -12,7 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const playerApi = new PlayerService();
-  const { login } = useContext(AuthContext); // Get the login function from AuthContext
+  const { login, setUser } = useContext(AuthContext); // Get login and setUser functions from AuthContext
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,6 +49,11 @@ const LoginPage = () => {
     }
   };
 
+  const handleGuestPlay = () => {
+    setUser(null); // Clear user context to indicate guest mode
+    navigate('/choose-theme'); // Redirect to choose theme page
+  };
+
   return (
     <div className="auth-page">
       <h2>Login</h2>
@@ -58,24 +63,32 @@ const LoginPage = () => {
           placeholder="Enter your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          data-cy="login-username"
         />
         <input
           type="password"
           placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          data-cy="login-password"
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} data-cy="login-button">
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
       {error && <p className="error-message">{error}</p>}
       <p>
         Don’t have an account?{' '}
-        <button type="button" onClick={() => navigate('/register')}>
+        <button type="button" onClick={() => navigate('/register')} data-cy="register-button">
           Register here
         </button>
       </p>
+      <div className="guest-play-container">
+        <p>Want to explore without signing in?</p>
+        <button type="button" onClick={handleGuestPlay} className="guest-play-button" data-cy="guest-play-button">
+          Play as Guest
+        </button>
+      </div>
     </div>
   );
 };
