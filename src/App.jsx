@@ -31,9 +31,11 @@ function App() {
               <Route path="/game" element={<Game />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
+              <Route path="/profile" element={<ProtectedRoute />}>
+                <Route path="" element={<ProfilePage />} />
+              </Route>
               {/* Protected Admin Routes */}
               <Route path="/admin" element={<ProtectedRoute requiredRole="admin" />}>
                 <Route path="" element={<AdminPage />} />
@@ -41,8 +43,8 @@ function App() {
               <Route path="/themeManagement" element={<ProtectedRoute requiredRole="admin" />}>
                 <Route path="" element={<ThemeManagerPage />} />
               </Route>
-              <Route path="/stats" element={<ProtectedRoute requiredRole="admin"/>}>
-                <Route path="" element={<StatisticsPage/>}/>
+              <Route path="/stats" element={<ProtectedRoute requiredRole="admin" />}>
+                <Route path="" element={<StatisticsPage />} />
               </Route>
             </Routes>
           </GameProvider>
