@@ -4,26 +4,26 @@ import { GameContext } from "./GameContext";
 
 function GameEnd() {
   const navigate = useNavigate();
-  const { 
-    gameOverMessage, 
-    setGameOver, 
-    setScore, 
-    setLives, 
-    setCorrectGuesses, 
-    setIncorrectGuesses, 
-    setCurrentWordIndex, 
-    setWordList 
+  const {
+    gameOverMessage,
+    setGameOver,
+    setScore,
+    setLives,
+    setCorrectGuesses,
+    setIncorrectGuesses,
+    setCurrentWordIndex,
+    setWordList,
   } = useContext(GameContext);
 
   const handleReturnToStart = () => {
     setGameOver(false);
     setScore(0);
-    setLives(3); // Reset lives to 3
+    setLives(5);
     setCorrectGuesses(0);
     setIncorrectGuesses(0);
     setCurrentWordIndex(0);
     setWordList([]);
-    navigate("/"); // Navigate to the starting page
+    navigate("/");
   };
 
   return (

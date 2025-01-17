@@ -1,15 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import { GameContext } from "./GameContext";
-import GameApi from "../apiCalls/GameService"; // Adjust the path if needed
+import GameApi from "../apiCalls/GameService";
+import "../../css/GamePlay.css";
 
-const gameService = new GameApi(); // Ensure instance creation
+const gameService = new GameApi();
 
 function GamePlay() {
   const {
     lives,
     setLives,
-    score,
-    setScore,
     wordList,
     currentWordIndex,
     setCurrentWordIndex,
@@ -20,32 +19,28 @@ function GamePlay() {
     incorrectGuesses,
     setIncorrectGuesses,
     time,
-    gameId, // gameId will be `null` for guest users
+    gameId,
   } = useContext(GameContext);
 
   const [currentGuess, setCurrentGuess] = useState("");
-  const [feedback, setFeedback] = useState("");
 
   const handleGuess = () => {
     const currentWord = wordList[currentWordIndex]?.word;
 
     if (currentGuess.trim().toLowerCase() === currentWord?.toLowerCase()) {
-      setScore((prevScore) => prevScore + 1);
       setCorrectGuesses((prev) => prev + 1);
       setCurrentWordIndex((prevIndex) => prevIndex + 1);
-      setFeedback("Correct!");
       setCurrentGuess("");
     } else {
       setLives((prevLives) => prevLives - 1);
       setIncorrectGuesses((prev) => prev + 1);
-      setFeedback("Wrong!");
     }
   };
 
   const handleGameEnd = async (message) => {
     setGameOver(true);
     setGameOverMessage(message);
-
+  
     if (gameId) {
       const endGameRequest = {
         gameId,
@@ -54,17 +49,14 @@ function GamePlay() {
         time,
         status: message === "You won the game!" ? "COMPLETED" : "FAILED",
       };
-
+  
       try {
         await gameService.endGame(endGameRequest);
-        console.log("Game results saved successfully.");
       } catch (error) {
         console.error("Error saving game results:", error);
       }
-    } else {
-      console.log("Guest user: Game results are not saved.");
     }
-  };
+  };  
 
   useEffect(() => {
     if (lives <= 0) {
@@ -74,49 +66,41 @@ function GamePlay() {
     }
   }, [lives, currentWordIndex, wordList]);
 
-  const endGameManually = () => {
-    handleGameEnd("Game ended by the user.");
-  };
-
   return (
-    <div data-cy="game-container">
-      <h1 data-cy="lives">Lives: {lives}</h1>
-      <h2 data-cy="score">Score: {score}</h2>
-      <h3 data-cy="time">Time: {time} seconds</h3>
-      <h3 data-cy="correct-guesses">Correct Guesses: {correctGuesses}</h3>
-      <h3 data-cy="incorrect-guesses">Incorrect Guesses: {incorrectGuesses}</h3>
-      {feedback && <p data-cy="feedback">{feedback}</p>}
-      {wordList?.length > 0 && currentWordIndex < wordList.length ? (
-        <>
+    <div className="game-container">
+      <div className="top-stats">
+        <h1>Lives: {lives}</h1>
+      </div>
+      <div className="top-right-stats">
+        <h1>Correct Guesses: {correctGuesses}</h1>
+        <h1>Incorrect Guesses: {incorrectGuesses}</h1>
+      </div>
+      <div className="time-container">
+        <h3>Time: {time} seconds</h3>
+      </div>
+      <div className="game-image-container">
+        {wordList?.length > 0 && currentWordIndex < wordList.length ? (
           <img
-            data-cy="hint-image"
             src={wordList[currentWordIndex]?.imageUrl}
             alt={`Hint for ${wordList[currentWordIndex]?.word}`}
-            style={{
-              width: "100px",
-              height: "100px",
-            }}
+            className="game-hint-image"
           />
-          <input
-            data-cy="guess-input"
-            type="text"
-            value={currentGuess}
-            onChange={(e) => setCurrentGuess(e.target.value)}
-          />
-          <button data-cy="guess-button" onClick={handleGuess}>
-            Guess
-          </button>
-          <button
-            data-cy="end-game-button"
-            onClick={endGameManually}
-            style={{ marginLeft: "10px" }}
-          >
-            End Game
-          </button>
-        </>
-      ) : (
-        <p data-cy="loading">Loading words...</p>
-      )}
+        ) : (
+          <p>Loading words...</p>
+        )}
+      </div>
+      <input
+        type="text"
+        value={currentGuess}
+        onChange={(e) => setCurrentGuess(e.target.value)}
+        placeholder="Enter your guess"
+      />
+      <div className="game-controls">
+        <button onClick={handleGuess}>Guess</button>
+        <button onClick={() => handleGameEnd("Game ended by the user.")}>
+          End Game
+        </button>
+      </div>
     </div>
   );
 }

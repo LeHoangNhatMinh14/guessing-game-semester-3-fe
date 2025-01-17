@@ -100,7 +100,9 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="profile-details">
-          <p><strong>Username:</strong> {playerDetails.username}</p>
+          <p>
+            <strong>Username:</strong> <span className="bright-username">{playerDetails.username}</span>
+          </p>
           <button onClick={() => setEditMode(true)}>Edit</button>
         </div>
       )}
@@ -108,11 +110,12 @@ const ProfilePage = () => {
       {/* Game Stats Section */}
       <div className="game-stats">
         <h2>Game Stats</h2>
-        <p><strong>Total Correct Guesses:</strong> {gameStats.totalCorrectGuesses}</p>
-        <p><strong>Total Wrong Guesses:</strong> {gameStats.totalWrongGuesses}</p>
-        <p><strong>Accuracy:</strong> {gameStats.accuracy}%</p>
+        <div className="stats-row">
+          <p><strong>Total Correct Guesses:</strong> {gameStats.totalCorrectGuesses}</p>
+          <p><strong>Total Wrong Guesses:</strong> {gameStats.totalWrongGuesses}</p>
+        </div>
+        <p className="accuracy"><strong>Accuracy:</strong> {gameStats.accuracy}%</p>
       </div>
-
       {/* Game History Section */}
       <PlayerGameHistory playerId={user.id} />
     </div>

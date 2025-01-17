@@ -1,0 +1,80 @@
+  .top-stats {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-align: left;
+  }
+  
+  .top-right-stats {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: right;
+  }
+  
+  .time-container {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    color: yellow;
+    text-align: center;
+  }
+  
+  .game-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .game-hint-image {
+    max-width: 50%;
+    height: auto;
+    display: block;
+  }
+  
+  .game-controls {
+    display: flex;
+    flex-direction: row; /* Change from column to row */
+    justify-content: center; /* Align buttons horizontally in the center */
+    align-items: center; /* Align buttons vertically */
+    margin-top: 20px;
+    gap: 10px; /* Add spacing between the buttons */
+  }
+  
+  
+  input[data-cy="guess-input"] {
+    padding: 10px;
+    border: 2px solid yellow;
+    border-radius: 5px;
+    width: 300px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  button[data-cy="guess-button"],
+  button[data-cy="end-game-button"] {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 150px;
+  }
+  
+  button[data-cy="guess-button"] {
+    background-color: limegreen;
+    color: black;
+  }
+  
+  button[data-cy="end-game-button"] {
+    background-color: red;
+    color: white;
+  }
+  
+  button[data-cy="guess-button"]:hover,
+  button[data-cy="end-game-button"]:hover {
+    transform: scale(1.1);
+  }
+  

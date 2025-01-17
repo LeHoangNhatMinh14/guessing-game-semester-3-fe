@@ -14,11 +14,13 @@ function StartingPage() {
       <NavLink to="/choose-difficulty">
         <button data-cy="play-button">Play</button>
       </NavLink>
-      <NavLink to="/Profile">
-        <button data-cy="profile-button" className="profile-button">
-          Profile
-        </button>
-      </NavLink>
+      {user && (
+        <NavLink to="/Profile">
+          <button data-cy="profile-button" className="profile-button">
+            Profile
+          </button>
+        </NavLink>
+      )}
       {/* Conditionally render the Admin button if the user has the ADMIN role */}
       {user && user.role === 'admin' && (
         <NavLink to="/admin">

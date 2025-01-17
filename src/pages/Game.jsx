@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from "../components/game/GameContext";
 import GamePlay from "../components/game/GamePlay";
@@ -14,22 +14,43 @@ function Game() {
 
   const {
     theme,
-    score,
     setScore,
-    gameOver,
     setGameOver,
     setGameOverMessage,
-    wordList,
     setWordList,
     setGameId,
-    time,
     setTime,
+    gameOver,
   } = useContext(GameContext);
 
   const [loading, setLoading] = useState(true);
-  const [timer, setTimer] = useState(null);
+  const timerRef = useRef(null); // Store the active timer reference
+
+  /**
+   * Safely clears the active timer.
+   */
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null; // Reset the reference
+    }
+  };
+
+  /**
+   * Starts a fresh game timer.
+   */
+  const startTimer = () => {
+    clearTimer(); // Ensure any previous timer is stopped
+    setTime(0); // Reset the timer state
+    const startTime = Date.now(); // Record when the timer started
+    timerRef.current = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000); // Calculate elapsed time
+      setTime(elapsed);
+    }, 1000);
+  };
 
   useEffect(() => {
+    // Redirect if no theme is selected
     if (!theme || (!theme.id && !theme.name)) {
       console.error("Theme is not properly set. Redirecting to choose theme.");
       navigate("/choose-theme");
@@ -38,19 +59,19 @@ function Game() {
 
     const startNewGame = async () => {
       try {
-        // Fetch words for the selected theme
+        // Fetch the words for the selected theme
         const fetchedWords = await ThemeService.fetchWords(theme.id, theme.name);
         setWordList(fetchedWords);
 
         if (user) {
-          // Only call `startGame` for authenticated users
+          // For authenticated users, start a new game session
           const response = await gameService.startGame(user.id, theme.id);
           setGameId(response.gameId);
         }
 
+        // Initialize the game state
         setScore(0);
-        setTime(0);
-        startTimer();
+        startTimer(); // Start the game timer
         setLoading(false);
       } catch (error) {
         console.error("Error starting game:", error);
@@ -58,35 +79,19 @@ function Game() {
       }
     };
 
-    const startTimer = () => {
-      const startTime = Date.now();
-      const interval = setInterval(() => {
-        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        setTime(elapsedTime);
-      }, 1000);
-      setTimer(interval);
-    };
-
     startNewGame();
 
     return () => {
-      if (timer) clearInterval(timer); // Cleanup timer
+      clearTimer(); // Clean up the timer when the component unmounts
     };
   }, [user, theme, navigate, setWordList, setGameId]);
 
   useEffect(() => {
-    if (gameOver && timer) {
-      clearInterval(timer); // Stop the timer when the game ends
-      setTimer(null);
-
-      if (user) {
-        // Only call `endGame` for authenticated users
-        gameService
-          .endGame({ gameId: setGameId, score })
-          .catch((error) => console.error("Error ending game:", error));
-      }
+    // Stop the timer when the game ends
+    if (gameOver) {
+      clearTimer();
     }
-  }, [gameOver, timer, user, gameService, setGameId, score]);
+  }, [gameOver]);
 
   if (loading) {
     return <p>Loading...</p>;
