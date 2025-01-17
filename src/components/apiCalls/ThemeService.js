@@ -109,4 +109,24 @@ export default class ThemeService {
       throw error;
     }
   }
+
+  static async searchThemes(term) {
+    try {
+      const response = await axios.get(`/search`, {
+        params: { term },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Attach the token
+        },
+      });
+  
+      // Log the Authorization header for debugging
+      console.log("Authorization Header:", response.config.headers.Authorization);
+  
+      return response.data || {}; // Ensure you return the full response object
+    } catch (error) {
+      console.error("Error searching themes:", error);
+      throw error;
+    }
+  }
+  
 } // Ensure this closing brace exists

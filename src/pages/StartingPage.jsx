@@ -8,9 +8,9 @@ function StartingPage() {
   const { user } = useContext(AuthContext); // Get user data from AuthContext
 
   return (
-    <div className="starting-page">
-      <LoginRegister />
-      <h1>PicGuessr</h1>
+    <div className="starting-page" data-cy="starting-page-container">
+      <LoginRegister data-cy="login-register-component" />
+      <h1 data-cy="game-title">PicGuessr</h1>
       <NavLink to="/choose-difficulty">
         <button data-cy="play-button">Play</button>
       </NavLink>

@@ -79,7 +79,7 @@ function GamePlay() {
   };
 
   return (
-    <div>
+    <div data-cy="game-container">
       <h1 data-cy="lives">Lives: {lives}</h1>
       <h2 data-cy="score">Score: {score}</h2>
       <h3 data-cy="time">Time: {time} seconds</h3>

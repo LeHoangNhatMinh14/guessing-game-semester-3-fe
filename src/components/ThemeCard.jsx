@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ThemeService from "./apiCalls/ThemeService";
 
 const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   const [word, setWord] = useState("");
   const [image, setImage] = useState(null);
   const [words, setWords] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const fileInputRef = useRef(null);
 
-  // Function to fetch words for the current theme
   const fetchWords = async () => {
     try {
       const fetchedWords = await ThemeService.fetchWords(theme.id);
@@ -18,7 +19,7 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
   };
 
   const handleImageChange = (event) => {
-    setImage(event.target.files[0]); // Get the uploaded file
+    setImage(event.target.files[0]);
   };
 
   const addWordToTheme = async () => {
@@ -27,63 +28,67 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
       return;
     }
     try {
-      await ThemeService.addWordToTheme(theme.id, word, image); // Include image in the API call
+      await ThemeService.addWordToTheme(theme.id, word, image);
       setNotification(`Word "${word}" added to theme "${theme.name}"!`);
       setWord("");
-      setImage(null); // Reset the image
-      fetchWords(); // Refresh the word list after adding
+      setImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      fetchWords();
     } catch (error) {
       setNotification("An error occurred while adding the word.");
     }
   };
 
-  // Function to delete a word from the theme
   const deleteWordFromTheme = async (wordToDelete) => {
     try {
       await ThemeService.deleteWordFromTheme(theme.id, wordToDelete);
       setNotification(`Word "${wordToDelete}" deleted from theme "${theme.name}".`);
-      fetchWords(); // Refresh the word list after deletion
+      fetchWords();
     } catch (error) {
       setNotification("An error occurred while deleting the word.");
     }
   };
 
-  // Function to delete the theme
   const deleteTheme = async () => {
     if (window.confirm(`Are you sure you want to delete the theme "${theme.name}"?`)) {
       try {
         await ThemeService.deleteTheme(theme.id);
         setNotification(`Theme "${theme.name}" deleted successfully.`);
-        fetchThemes(); // Refresh the list of themes after deletion
+        fetchThemes();
       } catch (error) {
         setNotification("An error occurred while deleting the theme.");
       }
     }
   };
 
-  // useEffect to fetch words when the page is loaded if there are no words
   useEffect(() => {
-    if (words.length === 0) {
-      fetchWords(); // Call fetchWords on initial load if words are empty
+    if (!loaded) {
+      fetchWords();
+      setLoaded(true);
     }
-  }, []); // Empty dependency array to run only once on page load
+  }, [loaded]);
 
   return (
-    <div className="theme-card">
+    <div className="theme-card" data-cy={`theme-card-${theme.name}`}>
       <h3>{theme.name}</h3>
       <div className="button-group">
-        {/* Delete Theme Button */}
-        <button onClick={deleteTheme} className="delete-theme-button">
+        <button
+          onClick={deleteTheme}
+          className="delete-theme-button"
+          data-cy={`delete-theme-${theme.name}`}
+        >
           Delete Theme
         </button>
-    
-        {/* View Words Button */}
-        <button onClick={fetchWords} className="view-words-button">
+        <button
+          onClick={fetchWords}
+          className="view-words-button"
+          data-cy={`view-words-${theme.name}`}
+        >
           View Words
         </button>
       </div>
-  
-      {/* Add Word Section */}
       <div className="add-word-section">
         <input
           type="text"
@@ -91,26 +96,31 @@ const ThemeCard = ({ theme, fetchThemes, setNotification }) => {
           value={word}
           onChange={(e) => setWord(e.target.value)}
           className="add-word-input"
+          aria-label="Enter word"
         />
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           className="add-word-file-input"
         />
-        <button onClick={addWordToTheme} className="add-word-button">
+        <button
+          onClick={addWordToTheme}
+          className="add-word-button"
+          data-cy={`add-word-${theme.name}`}
+        >
           Add Word
         </button>
       </div>
-  
-      {/* Display Words */}
       <ul className="words-list">
-        {words.map((w, index) => (
-          <li key={index} className="word-item">
+        {words.map((w) => (
+          <li key={w.word} className="word-item" data-cy={`word-item-${w.word}`}>
             <span>{w.word}</span>
             <button
               onClick={() => deleteWordFromTheme(w.word)}
               className="delete-word-button"
+              data-cy={`delete-word-${w.word}`}
             >
               Delete
             </button>

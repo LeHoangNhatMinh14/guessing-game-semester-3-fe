@@ -27,10 +27,10 @@ function ChooseDifficulty() {
 
   return (
     <div>
-      <h1>Choose Difficulty</h1>
-      <button onClick={() => handleDifficulty("Easy")}>Easy</button>
-      <button onClick={() => handleDifficulty("Medium")}>Medium</button>
-      <button onClick={() => handleDifficulty("Hard")}>Hard</button>
+      <h1 data-cy="difficulty-title">Choose Difficulty</h1>
+      <button data-cy="difficulty-easy" onClick={() => handleDifficulty("Easy")}>Easy</button>
+      <button data-cy="difficulty-medium" onClick={() => handleDifficulty("Medium")}>Medium</button>
+      <button data-cy="difficulty-hard" onClick={() => handleDifficulty("Hard")}>Hard</button>
     </div>
   );
 }

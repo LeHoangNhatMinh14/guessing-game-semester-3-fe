@@ -40,6 +40,7 @@ function ChooseTheme() {
               key={theme.id || theme.name}
               theme={theme}
               onSelectTheme={handleThemeSelect}
+              data-cy={`theme-card-${theme.name}`} // Tagging individual themes
             />
           ))
         ) : (
