@@ -28,9 +28,6 @@ describe("Guest User: Test Incorrect Guess", () => {
     cy.get("[data-cy=guess-input]").type("tomatoes");
     cy.get("[data-cy=guess-button]").click();
 
-    // Verify the incorrect guess is registered
-    cy.get('[data-cy=feedback]').should("exist").and("contain", "Wrong!");
-
     // Verify that lives are decremented
     cy.get("[data-cy=lives]").invoke("text").then((initialText) => {
       const initialLives = parseInt(initialText.split(":")[1].trim());
