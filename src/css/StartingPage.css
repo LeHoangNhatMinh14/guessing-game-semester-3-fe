@@ -1,0 +1,14 @@
+.starting-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .starting-page button {
+    margin: 10px 0; /* Space between buttons */
+    width: 80%; /* Adjust the width to fit the container */
+    max-width: 300px; /* Optional: Limit maximum width for better scaling */
+    text-align: center;
+  }
+  
