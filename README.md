@@ -2,8 +2,8 @@
 
 ##Some stuff I worked on the project 
 
-![Admin Page](https://imgur.com/6soGLxE)
+![Admin Page](https://imgur.com/6soGLxE.png)
 
-![Profile page](https://imgur.com/0vW38bk)
+![Profile page](https://imgur.com/0vW38bk.png)
 
-![Game Screen](https://imgur.com/p6JA36Z)
+![Game Screen](https://imgur.com/p6JA36Z.png)
