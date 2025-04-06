@@ -1,6 +1,6 @@
 # Guessing Game - Frontend
 
-##Some stuff I worked on the project 
+##Some stuff I worked on the project with the front end.
 
 ![Admin Page](https://imgur.com/6soGLxE.png)
 
